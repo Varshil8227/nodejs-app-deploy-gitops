@@ -1,31 +1,26 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: eventora-backend
-  labels:
-    app: eventora-backend
-spec:
-  replicas: {{ .Values.replicaCount }}
-  selector:
-    matchLabels:
-      app: eventora-backend
-  template:
-    metadata:
-      labels:
-        app: eventora-backend
-    spec:
-      containers:
-        - name: backend
-          image: "{{ .Values.backend.repository }}:{{ .Values.backend.tag }}"
-          imagePullPolicy: Always
-          ports:
-            - containerPort: {{ .Values.backend.containerPort }}
-          env:
+env:
             - name: NODE_ENV
               value: "{{ .Values.backend.env.NODE_ENV }}"
             - name: PORT
               value: "{{ .Values.backend.env.PORT }}"
+            # આ લાઇનો સીધી કુબરનેટિસ સિક્રેટમાંથી ડેટા લોડ કરશે
             - name: MONGO_URI
-              value: "{{ .Values.backend.env.MONGO_URI }}"
-            - name: JWT_SECRET:
-              value: "{{ .Values.backend.env.JWT_SECRET }}"
+              valueFrom:
+                secretKeyRef:
+                  name: eventora-secrets
+                  key: MONGO_URI
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: eventora-secrets
+                  key: JWT_SECRET
+            - name: EMAIL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: eventora-secrets
+                  key: EMAIL_USER
+            - name: EMAIL_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: eventora-secrets
+                  key: EMAIL_PASS
