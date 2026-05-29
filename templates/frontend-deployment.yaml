@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventora-frontend
+  labels:
+    app: eventora-frontend
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: eventora-frontend
+  template:
+    metadata:
+      labels:
+        app: eventora-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: "{{ .Values.frontend.repository }}:{{ .Values.frontend.tag }}"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: {{ .Values.frontend.containerPort }}

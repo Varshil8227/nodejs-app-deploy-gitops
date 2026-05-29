@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: eventora-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # બેકએન્ડ કોર્સ (CORS) ઇસ્યુ ન થાય તે માટે રાઉટ પ્રીફિક્સ રીરાઈટ રૂલ
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  rules:
+    - host: {{ .Values.ingress.host | quote }}
+      http:
+        paths:
+          # ૧. બધો જ જનરલ ટ્રાફિક ફ્રન્ટએન્ડ કન્ટેનર પર જશે
+          - path: /()(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: eventora-frontend-svc
+                port:
+                  number: 80
+          # ૨. /api વાળો ટ્રાફિક ઓટોમેટિક બેકએન્ડ સર્વર પર ડાયવર્ટ થશે
+          - path: /api()(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: eventora-backend-svc
+                port:
+                  number: 5000

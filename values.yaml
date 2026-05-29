@@ -1,0 +1,25 @@
+# ગ્લોબલ સેટિંગ્સ
+replicaCount: 1
+
+# ફ્રન્ટએન્ડ (Client) કન્ફિગ્યુરેશન
+frontend:
+  repository: "YOUR_DOCKERHUB_USERNAME/eventora-client"
+  tag: "latest" # ગિટહબ એક્શન્સ આ ટેગ ઓટોમેટિક અપડેટ કરશે
+  containerPort: 80
+
+# બેકએન્ડ (Server) કન્ફિગ્યુરેશન
+backend:
+  repository: "YOUR_DOCKERHUB_USERNAME/eventora-server"
+  tag: "latest" # ગિટહબ એક્શન્સ આ ટેગ ઓટોમેટિક અપડેટ કરશે
+  containerPort: 5000
+  env:
+    NODE_ENV: "production"
+    PORT: "5000"
+    MONGO_URI: "mongodb+srv://user:pass@cluster.mongodb.net/eventora"
+    JWT_SECRET: "your_super_secret_jwt_key"
+
+# ઇન્ગ્રેસ (Load Balancer) રાઉટીંગ સેટિંગ્સ
+ingress:
+  className: "nginx"
+  # જો તમારી પાસે ડોમેન ન હોય તો અહીં તમારા EC2 નો પબ્લિક IP પણ લખી શકો (દા.ત. 54.21.23.12.nip.io)
+  host: "eventora.local"
