@@ -24,3 +24,8 @@ env:
                 secretKeyRef:
                   name: eventora-secrets
                   key: EMAIL_PASS
+
+
+
+
+                  
